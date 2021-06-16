@@ -25,9 +25,9 @@ const $errors = new Proxy(Errors, {
   }
 })
 
-module.exports = {
+module.exports = () => ({
   $errors: $errors,
   created() {
     this.$errors = $errors
   }
-}
+})
