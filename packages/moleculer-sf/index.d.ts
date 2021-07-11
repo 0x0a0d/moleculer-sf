@@ -12,11 +12,7 @@ declare class MoleculerSfService extends Moleculer.Service {
 // @ts-ignore
 export const moleculerServiceFactory: (moleculer: Moleculer, plugins: string | string[]) => typeof Moleculer.Service
 
-type MoleculerSfFactorySchema = boolean | {
+export type FactorySchema = boolean | {
   global?: boolean,
   plugins?: string | string[]
-}
-
-export interface ServiceSchema extends Moleculer.ServiceSchema {
-  $factory?: MoleculerSfFactorySchema
 }
