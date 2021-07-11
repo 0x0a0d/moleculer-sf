@@ -16,5 +16,8 @@
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
     "mongoose": "^5.12.3"
+  },
+  "devDependencies": {
+    "moleculer": "^0.14.15"
   }
 }

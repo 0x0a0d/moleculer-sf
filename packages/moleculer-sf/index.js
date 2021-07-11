@@ -1,7 +1,7 @@
-const {applyPlugins} = require("./helper");
+const { applyPlugins } = require('./helper')
 const { ServiceModifier } = require('./ServiceModifier')
 
-module.exports = (moleculer, plugins) => class Service extends moleculer.Service {
+const moleculerServiceFactory = (moleculer, plugins) => class Service extends moleculer.Service {
   constructor(broker, schema) {
     if (!(
       schema == null ||
@@ -24,3 +24,5 @@ module.exports = (moleculer, plugins) => class Service extends moleculer.Service
     super(broker, schema)
   }
 }
+
+module.exports = moleculerServiceFactory
