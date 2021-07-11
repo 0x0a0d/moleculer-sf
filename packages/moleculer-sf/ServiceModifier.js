@@ -4,6 +4,7 @@ exports.ServiceModifier = class ServiceModifier {
       ? Object.assign({}, schema[fieldTarget], dataObj)
       : Object.assign({}, dataObj, schema[fieldTarget])
   }
+
   static concat(schema, fieldTarget, dataOrDataArray, insertToTop = false) {
     if (schema[fieldTarget] == null) {
       schema[fieldTarget] = [].concat(dataOrDataArray)

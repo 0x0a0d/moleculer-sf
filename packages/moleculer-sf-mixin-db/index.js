@@ -1,5 +1,5 @@
 const pluralize = require('mongoose').Mongoose.prototype.pluralize()
-const DbService	= require('moleculer-db')
+const DbService = require('moleculer-db')
 const MongoAdapter = require('@cylution/moleculer-db-adapter-mongoose')
 
 module.exports = (schema) => {
