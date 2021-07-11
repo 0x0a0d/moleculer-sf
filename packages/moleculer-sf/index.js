@@ -9,7 +9,7 @@ const moleculerServiceFactory = (moleculer, plugins) => class Service extends mo
       schema.name.startsWith('$')
     )) {
       let schemaPlugins = []
-      if (schema.$factory == null || schema.$factory.global !== false) {
+      if (schema.$factory == null || schema.$factory !== false || schema.$factory.global !== false) {
         // apply global plugins
         schemaPlugins = schemaPlugins.concat(applyPlugins(plugins, schema, moleculer))
       }
