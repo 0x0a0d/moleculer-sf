@@ -13,7 +13,10 @@ exports.applyPlugins = function(plugins, schema, moleculer) {
         }
         plugin = require.main.require(plugin)
       }
-      return plugin(schema, moleculer)
+      if (typeof plugin === 'function') {
+        return plugin(schema, moleculer)
+      }
+      return plugin
     })
     .filter(schemaPlugin => schemaPlugin != null)
     .reduce((arr, p) => arr.concat(p), [])
