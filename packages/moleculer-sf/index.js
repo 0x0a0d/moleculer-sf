@@ -2,26 +2,57 @@ const { applyPlugins } = require('./helper')
 const { ServiceModifier } = require('./ServiceModifier')
 
 const moleculerServiceFactory = (moleculer, plugins) => class Service extends moleculer.Service {
-  constructor(broker, schema) {
+  constructor(broker, serviceSchema) {
     if (!(
-      schema == null ||
-      schema.name == null ||
-      schema.name.startsWith('$')
+      serviceSchema == null ||
+      serviceSchema.name == null ||
+      serviceSchema.name.startsWith('$') ||
+      serviceSchema.$factory === false
     )) {
-      let schemaPlugins = []
-      if (schema.$factory == null || schema.$factory !== false || schema.$factory.global !== false) {
-        // apply global plugins
-        schemaPlugins = schemaPlugins.concat(applyPlugins(plugins, schema, moleculer))
+      let extraPlugins = []
+      if (serviceSchema.$factory == null) {
+        extraPlugins = extraPlugins.concat(plugins)
+      } else {
+        if (serviceSchema.$factory.global !== false) {
+          extraPlugins = extraPlugins.concat(plugins)
+        }
+        if (serviceSchema.$factory.plugins) {
+          extraPlugins = extraPlugins.concat(serviceSchema.$factory.plugins)
+        }
       }
-      if (schema.$factory != null && schema.$factory.plugins) {
-        schemaPlugins = schemaPlugins.concat(applyPlugins(schema.$factory.plugins, schema, moleculer))
-      }
+      const schemaPlugins = extraPlugins.length
+        ? applyPlugins(extraPlugins, serviceSchema, moleculer)
+        : []
+
       if (schemaPlugins.length) {
-        ServiceModifier.concat(schema, 'mixins', schemaPlugins)
+        serviceSchema.settings = schemaPlugins.reduce((settings, schemaPlugin) => {
+          if (schemaPlugin.settings) {
+            Object
+              .entries(schemaPlugin.settings)
+              .forEach(([key, settingValue]) => {
+                if (settings[key] == null || settingValue == null) {
+                  settings[key] = settingValue
+                  return
+                }
+                if (Array.isArray(settings[key]) || Array.isArray(settingValue)) {
+                  settings[key] = [].concat(settings[key], settingValue).filter(x => x != null)
+                  return
+                }
+                if (typeof settings[key] === 'object' && typeof settingValue === 'object') {
+                  settings[key] = Object.assign({}, settings[key], settingValue)
+                  return
+                }
+                settings[key] = settingValue
+              })
+            delete schemaPlugin.settings
+          }
+          return settings
+        }, serviceSchema.settings || {})
+        ServiceModifier.concat(serviceSchema, 'mixins', schemaPlugins)
       }
-      delete schema.$factory
+      delete serviceSchema.$factory
     }
-    super(broker, schema)
+    super(broker, serviceSchema)
   }
 }
 
