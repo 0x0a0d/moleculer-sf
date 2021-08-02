@@ -13,12 +13,14 @@
 // service-factory.js
 const moleculer = require('moleculer')
 const moleculerServiceFactory = require('moleculer-sf')
+const moleculerSfMixinDb = require('moleculer-sf-mixin-db')
 
 // global all factory plugins
 const plugins = [
   'catch-removed-event', // or with prefix moleculer-sf-catch-removed-event
   'prevent-change-created-at', // or require('moleculer-sf-prevent-change-created-at')
-  'mixin-db', // or just string without prefix
+  // 'mixin-db', // or just string without prefix - v1
+  moleculerSfMixinDb(false), // as function
 ]
 
 module.exports = moleculerServiceFactory(moleculer, plugins)

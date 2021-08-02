@@ -136,3 +136,4 @@ temp/
 
 ## Lerna packages
 src
+test

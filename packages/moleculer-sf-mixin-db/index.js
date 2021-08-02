@@ -2,26 +2,29 @@ const pluralize = require('mongoose').Mongoose.prototype.pluralize()
 const DbService = require('moleculer-db')
 const MongoAdapter = require('@cylution/moleculer-db-adapter-mongoose')
 
-module.exports = (schema) => {
-  if (schema.schema == null) {
+module.exports = (pluralizeName = false) => (serviceSchema) => {
+  if (serviceSchema.schema == null) {
     return
   }
-  if (!Array.isArray(schema.mixins)) {
-    schema.mixins = []
-  } else if (schema.mixins.some(mixin => mixin.adapter != null)) {
+  if (!Array.isArray(serviceSchema.mixins)) {
+    serviceSchema.mixins = []
+  } else if (serviceSchema.mixins.some(mixin => mixin.adapter != null)) {
     return
   }
-  if (schema.modelName == null) {
-    schema.modelName = pluralize(schema.name.replace(/\$/g, ''))
+  if (serviceSchema.modelName == null) {
+    const modelName = serviceSchema.name.replace(/\$/g, '')
+    serviceSchema.modelName = pluralizeName
+      ? pluralize(modelName)
+      : modelName
   }
   const settings = {}
   let mongoURI = process.env.MONGO_URI
-  if (schema.settings != null && schema.settings.mongoURI) {
-    mongoURI = schema.settings.mongoURI
+  if (serviceSchema.settings != null && serviceSchema.settings.mongoURI) {
+    mongoURI = serviceSchema.settings.mongoURI
     settings.$secureSettings = ['mongoURI']
   }
   if (mongoURI == null) {
-    throw new Error(`Service '${schema.name}' missed settings.mongoURI`)
+    throw new Error(`Service '${serviceSchema.name}' missed mongoURI. Both process.env.MONGO_URI and service.settings.mongoURI are null`)
   }
   const adapter = new MongoAdapter(mongoURI, {
     useCreateIndex: true,
