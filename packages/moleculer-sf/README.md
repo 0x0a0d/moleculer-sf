@@ -11,8 +11,7 @@
 - For all services
 ```js
 // service-factory.js
-const moleculer = require('moleculer')
-const moleculerServiceFactory = require('moleculer-sf')
+const { moleculerServiceFactory } = require('moleculer-sf')
 const moleculerSfMixinDb = require('moleculer-sf-mixin-db')
 
 // global all factory plugins
@@ -23,7 +22,12 @@ const plugins = [
   moleculerSfMixinDb(false), // as function
 ]
 
-module.exports = moleculerServiceFactory(moleculer, plugins)
+const mixins = {
+  mixinA: (serviceSchema, options) => {}, // void
+  mixinB: (serviceSchema/** , options? */) => {} // void
+}
+
+module.exports = moleculerServiceFactory(plugins, mixins)
 ```
 P/S: do not forget to install factory dependencies
 > **npm i moleculer-sf-mixin-db**
@@ -48,6 +52,10 @@ module.exports = {
     global: false, // ignore global all-factory-plugins
     plugins: [
       'mixin-db', // add mixin-db only
+    ],
+    mixins: [
+      'mixinB',
+      { name: 'mixinA', options: { /* will pass to mixin function */ } }
     ]
   },
 }
@@ -56,13 +64,13 @@ module.exports = {
 ## Plugin module
 
 Plugin module can be
-- Function(serviceSchema, moleculer) => ServiceSchema or array of ServiceSchema
+- Function(serviceSchema) => ServiceSchema or array of ServiceSchema
 
 Service factory module will add all return `except null` from plugin
 
 Structure
 ```js
-module.exports = function(schema, moleculer) {
+module.exports = function(serviceSchema) {
   // ...
   return {
     // $pluginOrder: Number.MAX_SAFE_INTEGER, // special: biggest will be placed at end of mixins array
@@ -72,4 +80,28 @@ module.exports = function(schema, moleculer) {
   }
 }
 ```
-+ $pluginOrder: see more at [merge algorithm](https://moleculer.services/docs/0.14/services.html#Merge-algorithm)
+## Mixin module
+
+Mixin module can be
+- Function(serviceSchema, options?) => void
+
+Structure
+```js
+module.exports = function(serviceSchema, options) {
+  // do any changes here to serviceSchema
+}
+```
+
+## Typescript
+
+```typescript
+// extends.d.ts
+import { MoleculerSFSchema } from 'moleculer-sf'
+
+declare module 'moleculer' {
+  interface ServiceSchema {
+    $factory?: MoleculerSFSchema | boolean
+  }
+}
+
+```

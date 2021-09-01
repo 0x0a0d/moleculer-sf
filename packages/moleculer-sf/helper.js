@@ -1,9 +1,9 @@
-exports.applyPlugins = function(plugins, schema, moleculer) {
-  if (plugins == null) {
+const moleculer = require('moleculer')
+
+exports.applyPlugins = function(plugins, schema) {
+  plugins = [].concat(plugins || [])
+  if (plugins.length === 0) {
     return []
-  }
-  if (!Array.isArray(plugins)) {
-    plugins = [plugins]
   }
   return plugins
     .map(plugin => {
