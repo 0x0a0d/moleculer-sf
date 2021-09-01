@@ -57,4 +57,4 @@ const moleculerServiceFactory = (plugins) => class ServiceFactory extends Servic
   }
 }
 
-module.exports = moleculerServiceFactory
+exports.moleculerServiceFactory = moleculerServiceFactory

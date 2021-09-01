@@ -12,7 +12,7 @@
 ```js
 // service-factory.js
 const moleculer = require('moleculer')
-const moleculerServiceFactory = require('moleculer-sf')
+const { moleculerServiceFactory } = require('moleculer-sf')
 const moleculerSfMixinDb = require('moleculer-sf-mixin-db')
 
 // global all factory plugins
