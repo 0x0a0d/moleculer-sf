@@ -1,7 +1,8 @@
 const { applyPlugins } = require('./helper')
 const { ServiceModifier } = require('./ServiceModifier')
+const { Service } = require('moleculer')
 
-const moleculerServiceFactory = (moleculer, plugins) => class Service extends moleculer.Service {
+const moleculerServiceFactory = (plugins) => class ServiceFactory extends Service {
   constructor(broker, serviceSchema) {
     if (!(
       serviceSchema == null ||
@@ -21,7 +22,7 @@ const moleculerServiceFactory = (moleculer, plugins) => class Service extends mo
         }
       }
       const schemaPlugins = extraPlugins.length
-        ? applyPlugins(extraPlugins, serviceSchema, moleculer)
+        ? applyPlugins(extraPlugins, serviceSchema)
         : []
 
       if (schemaPlugins.length) {

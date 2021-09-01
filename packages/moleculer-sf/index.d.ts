@@ -1,22 +1,25 @@
-import * as Moleculer from 'moleculer'
+import { Service, ServiceSchema } from 'moleculer'
 
-export type MoleculerPluginSchema = Moleculer.ServiceSchema & {
-  $pluginOrder: number,
+declare namespace MoleculerSF {
+  type MoleculerSFPluginSchema = ServiceSchema & {
+    $pluginOrder: number,
+  }
+
+  type MoleculerSFPluginFunction = (serviceSchema: ServiceSchema) => Partial<MoleculerSFPluginSchema> | void
+
+  type PluginType = string | MoleculerSFPluginFunction
+  const moleculerServiceFactory: (globalPlugins: PluginType[]) => typeof Service
+
+  interface MoleculerSFSchema {
+    global?: boolean,
+    plugins?: PluginType[]
+  }
 }
 
-export type moleculerPluginFunction<T = Moleculer.ServiceSchema> = (schema: T, moleculer?: any) => Partial<MoleculerPluginSchema> | void | null
-
-declare class MoleculerSfService extends Moleculer.Service {
-  constructor(broker: Moleculer.ServiceBroker, schema: Moleculer.ServiceSchema)
+declare module 'moleculer' {
+  interface ServiceSchema {
+    $factory?: MoleculerSF.MoleculerSFSchema | boolean
+  }
 }
 
-type PluginType = string | moleculerPluginFunction
-
-declare const moleculerServiceFactory: (moleculer: any, plugins: PluginType | PluginType[]) => typeof Moleculer.Service
-
-export type FactorySchema = boolean | {
-  global?: boolean,
-  plugins?: string | string[] | any
-}
-
-export default moleculerServiceFactory
+export = MoleculerSF

@@ -1,4 +1,4 @@
-exports.applyPlugins = function(plugins, schema, moleculer) {
+exports.applyPlugins = function(plugins, serviceSchema) {
   if (plugins == null) {
     return []
   }
@@ -14,7 +14,7 @@ exports.applyPlugins = function(plugins, schema, moleculer) {
         plugin = require.main.require(plugin)
       }
       if (typeof plugin === 'function') {
-        return plugin(schema, moleculer)
+        return plugin(serviceSchema)
       }
       return plugin
     })
