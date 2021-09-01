@@ -11,5 +11,13 @@
   },
   "optionalDependencies": {
     "lerna": "^4.0.0"
+  },
+  "dependencies": {
+    "moleculer-sf": "file:packages/moleculer-sf",
+    "moleculer-sf-catch-removed-event": "file:packages/moleculer-sf-catch-removed-event",
+    "moleculer-sf-mixin-db": "file:packages/moleculer-sf-mixin-db",
+    "moleculer-sf-mixin-errors": "file:packages/moleculer-sf-mixin-errors",
+    "moleculer-sf-prevent-change-created-at": "file:packages/moleculer-sf-prevent-change-created-at",
+    "moleculer-sf-service-system": "file:packages/moleculer-sf-service-system"
   }
 }
