@@ -1,6 +1,6 @@
 {
   "name": "moleculer-sf",
-  "version": "2.0.0",
+  "version": "3.0.0-alpha.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
-    "mongoose": "^5.12.3",
-    "moleculer": "^0.14.15"
+    "moleculer": "^0.14.15",
+    "mongoose": "^5.12.3"
   }
 }
