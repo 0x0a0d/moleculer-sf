@@ -5,26 +5,25 @@ declare namespace MoleculerSF {
     $pluginOrder: number,
   }
 
-  type MoleculerSFPluginFunction = (schema: ServiceSchema) => Partial<MoleculerSFPluginSchema> | void | null
-  type MoleculerSFMixinFunction = (schema: ServiceSchema, options?: MixinOptions) => void
+  type MoleculerSFPluginFunction = (schema: ServiceSchema) => Partial<MoleculerSFPluginSchema> | void
+  type MoleculerSFCustomPluginFunction = (schema: ServiceSchema, options?: CustomPluginOptions) => Partial<MoleculerSFPluginSchema> | void
 
-  interface MixinOptions {}
-  interface MoleculerSFMixins {
-    [name: string]: MoleculerSFMixinFunction
+  interface CustomPluginOptions {}
+  interface MoleculerSFCustomPlugins {
+    [name: string]: MoleculerSFCustomPluginFunction
   }
 
   type PluginType = string | MoleculerSFPluginFunction
-  type MixinType = string | {
-    name: keyof MoleculerSFMixins,
-    options: MixinOptions
+  type CustomPluginType = string | MoleculerSFCustomPluginFunction | {
+    name: keyof MoleculerSFCustomPlugins,
+    options?: CustomPluginOptions
   }
 
-  const moleculerServiceFactory: (plugins: PluginType[], mixins?: MoleculerSFMixins[]) => typeof Service
+  const moleculerServiceFactory: (globalPlugins: PluginType[], customPlugins?: MoleculerSFCustomPlugins) => typeof Service
 
   interface MoleculerSFSchema {
     global?: boolean,
-    plugins?: PluginType | PluginType[],
-    mixins?: MixinType[]
+    mixins?: CustomPluginType[]
   }
 }
 

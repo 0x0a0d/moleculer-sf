@@ -15,19 +15,19 @@ const { moleculerServiceFactory } = require('moleculer-sf')
 const moleculerSfMixinDb = require('moleculer-sf-mixin-db')
 
 // global all factory plugins
-const plugins = [
+const globalPlugins = [
   'catch-removed-event', // or with prefix moleculer-sf-catch-removed-event
   'prevent-change-created-at', // or require('moleculer-sf-prevent-change-created-at')
   // 'mixin-db', // or just string without prefix - v1
   moleculerSfMixinDb(false), // as function
 ]
 
-const mixins = {
-  mixinA: (serviceSchema, options) => {}, // void
-  mixinB: (serviceSchema/** , options? */) => {} // void
+const customPlugins = {
+  pluginA: (serviceSchema, options) => {}, // void
+  pluginB: (serviceSchema/** , options? */) => {} // void
 }
 
-module.exports = moleculerServiceFactory(plugins, mixins)
+module.exports = moleculerServiceFactory(globalPlugins, customPlugins)
 ```
 P/S: do not forget to install factory dependencies
 > **npm i moleculer-sf-mixin-db**
@@ -51,11 +51,8 @@ module.exports = {
   $factory: {
     global: false, // ignore global all-factory-plugins
     plugins: [
-      'mixin-db', // add mixin-db only
-    ],
-    mixins: [
-      'mixinB',
-      { name: 'mixinA', options: { /* will pass to mixin function */ } }
+      'pluginB',
+      { name: 'pluginA', options: { /* will pass to mixin function */ } }
     ]
   },
 }
@@ -64,7 +61,7 @@ module.exports = {
 ## Plugin module
 
 Plugin module can be
-- Function(serviceSchema) => ServiceSchema or array of ServiceSchema
+- Function(serviceSchema, options?) => ServiceSchema or array of ServiceSchema
 
 Service factory module will add all return `except null` from plugin
 
@@ -80,27 +77,26 @@ module.exports = function(serviceSchema) {
   }
 }
 ```
-## Mixin module
-
-Mixin module can be
-- Function(serviceSchema, options?) => void
-
-Structure
-```js
-module.exports = function(serviceSchema, options) {
-  // do any changes here to serviceSchema
-}
-```
 
 ## Typescript
 
 ```typescript
 // extends.d.ts
+// I'm ts beginner
 import { MoleculerSFSchema } from 'moleculer-sf'
 
 declare module 'moleculer' {
   interface ServiceSchema {
     $factory?: MoleculerSFSchema | boolean
+  }
+}
+
+declare module 'moleculer-sf' {
+  interface CustomPluginOptions {
+    data?: string
+  }
+  interface CustomPluginOptions {
+    counter?: number
   }
 }
 

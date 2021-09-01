@@ -2,39 +2,54 @@ const moleculer = require('moleculer')
 const { applyPlugins } = require('./helper')
 const { ServiceModifier } = require('./ServiceModifier')
 
-const moleculerServiceFactory = (plugins, mixins) => {
-  plugins = [].concat(plugins || [])
-  mixins = [].concat(mixins || [])
+const moleculerServiceFactory = (globalPlugins, customPlugins = {}) => {
+  globalPlugins = [].concat(globalPlugins || [])
 
   return class Service extends moleculer.Service {
     constructor(broker, serviceSchema) {
       if (!(
         serviceSchema == null ||
         serviceSchema.name == null ||
-        serviceSchema.name.startsWith('$') ||
-        serviceSchema.$factory === false
+        serviceSchema.name.startsWith('$')
       )) {
         const extra = {
           plugins: [],
           mixins: []
         }
-        if (serviceSchema.$factory == null || serviceSchema.$factory === true) {
-          extra.plugins.push(...plugins)
-        } else if (serviceSchema.$factory !== false) {
-          if (serviceSchema.$factory.global !== false) {
-            extra.plugins.push(...plugins)
-          }
-          if (serviceSchema.$factory.plugins) {
-            extra.plugins.push(...[].concat(serviceSchema.$factory.plugins))
+        if (serviceSchema.$factory !== false) {
+          if (serviceSchema.$factory == null) {
+            extra.plugins.push(...globalPlugins)
+          } else {
+            if (serviceSchema.$factory === true || serviceSchema.$factory.global !== false) {
+              extra.plugins.push(...globalPlugins)
+            }
+            if (serviceSchema.$factory.mixins) {
+              extra.mixins.push(...[].concat(serviceSchema.$factory.mixins))
+            }
           }
         }
-        const schemaPlugins = applyPlugins(extra.plugins, serviceSchema)
+        const extraSchemas = applyPlugins(extra.plugins, serviceSchema)
+        extraSchemas.push(...extra.mixins.reduce((arr, mixin) => {
+          let res
+          if (typeof mixin === 'string') {
+            res = customPlugins[mixin](serviceSchema)
+          } else if (typeof mixin === 'function') {
+            res = mixin(serviceSchema)
+          } else {
+            const { name, options } = mixin
+            res = customPlugins[name](serviceSchema, options)
+          }
+          if (res != null) {
+            arr.push(res)
+          }
+          return arr
+        }, []))
 
-        if (schemaPlugins.length) {
-          serviceSchema.settings = schemaPlugins.reduce((settings, schemaPlugin) => {
-            if (schemaPlugin.settings) {
+        if (extraSchemas.length) {
+          serviceSchema.settings = extraSchemas.reduce((settings, extraSchema) => {
+            if (extraSchema.settings) {
               Object
-                .entries(schemaPlugin.settings)
+                .entries(extraSchema.settings)
                 .forEach(([key, settingValue]) => {
                   if (settings[key] == null || settingValue == null) {
                     settings[key] = settingValue
@@ -50,21 +65,11 @@ const moleculerServiceFactory = (plugins, mixins) => {
                   }
                   settings[key] = settingValue
                 })
-              // delete schemaPlugin.settings
+              delete extraSchema.settings
             }
             return settings
           }, serviceSchema.settings || {})
-          ServiceModifier.concat(serviceSchema, 'mixins', schemaPlugins)
-        }
-        if (extra.mixins.length) {
-          extra.mixins.forEach(mixin => {
-            if (typeof mixin === 'string') {
-              mixins[mixin](serviceSchema)
-            } else {
-              const { name, options } = mixin
-              mixins[name](serviceSchema, options)
-            }
-          })
+          ServiceModifier.concat(serviceSchema, 'mixins', extraSchemas)
         }
         // delete serviceSchema.$factory
       }
