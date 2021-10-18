@@ -1,3 +1,4 @@
+import 'moleculer'
 import { MoleculerSFPluginFunction } from 'moleculer-sf'
 
 /**
@@ -5,3 +6,10 @@ import { MoleculerSFPluginFunction } from 'moleculer-sf'
  */
 declare function moleculerSfMixinDb(pluralizeName: boolean): MoleculerSFPluginFunction;
 export default moleculerSfMixinDb
+
+
+declare module 'moleculer' {
+  interface ServiceSettingSchema {
+    mongoURI?: string
+  }
+}
