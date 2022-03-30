@@ -14,8 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cylution/moleculer-db": "^0.8.17-3",
-    "@cylution/moleculer-db-adapter-mongoose": "^1.0.1",
+    "@cylution/moleculer-db": "^0.8.17-4",
+    "@cylution/moleculer-db-adapter-mongoose": "^1.0.2-1",
     "moleculer": "^0.14.12",
     "mongoose": "^6.2.9"
   },
