@@ -32,11 +32,7 @@ module.exports = (pluralizeName = false) => {
     if (mongoURI == null) {
       throw new Error(`Service '${serviceSchema.name}' missed mongoURI. Both process.env.MONGO_URI and service.settings.mongoURI are null`)
     }
-    const adapter = new MongoAdapter(mongoURI, {
-      useCreateIndex: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
+    const adapter = new MongoAdapter(mongoURI)
     return {
       $pluginOrder: Number.MAX_SAFE_INTEGER,
       adapter,
