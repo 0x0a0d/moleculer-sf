@@ -1,6 +1,6 @@
 {
   "name": "moleculer-sf-mixin-db",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,12 +14,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cylution/moleculer-db": "^0.8.17-3",
     "@cylution/moleculer-db-adapter-mongoose": "^1.0.1",
     "moleculer": "^0.14.12",
-    "@cylution/moleculer-db": "^0.8.17-3",
     "mongoose": "^6.2.9"
   },
   "devDependencies": {
-    "moleculer-sf": "^3.0.1"
+    "moleculer-sf": "^4.0.0"
   }
 }
