@@ -1,12 +1,16 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "audit": "lerna exec --concurrency 1 npm audit",
+    "audit-fix": "lerna exec --concurrency 1 npm audit fix"
+  },
   "devDependencies": {
-    "@cylution/eslint-config-nodejs": "^1.0.5",
+    "@cylution/eslint-config-nodejs": "^1.0.15",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",
-    "mongoose": "^5.13.2",
+    "mongoose": "^6.2.9",
     "typescript": "^4.3.5"
   },
   "optionalDependencies": {

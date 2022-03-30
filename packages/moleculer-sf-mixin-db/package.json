@@ -17,7 +17,7 @@
     "@cylution/moleculer-db-adapter-mongoose": "^0.8.12",
     "moleculer": "^0.14.12",
     "@cylution/moleculer-db": "^0.8.17-2",
-    "mongoose": "^5.13.14"
+    "mongoose": "^6.2.9"
   },
   "devDependencies": {
     "moleculer-sf": "^3.0.1"
